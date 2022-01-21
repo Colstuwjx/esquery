@@ -62,7 +62,14 @@ func TestAggregations(t *testing.T) {
 			"a complex, multi-aggregation, nested",
 			Aggregate(
 				NestedAgg("categories", "categories").
-					Aggs(TermsAgg("type", "outdoors")),
+					Aggs(
+						TermsAgg("type", "outdoors").Aggs(
+							DateHistogramAgg("time", "timestamp").
+								Fixedinterval("3m").MinDocCount(0).Aggs(
+								Sum("sumPeople", "people"),
+							),
+						),
+					),
 				FilterAgg("filtered",
 					Term("type", "t-shirt")),
 			),
@@ -76,6 +83,22 @@ func TestAggregations(t *testing.T) {
 							"type": map[string]interface{}{
 								"terms": map[string]interface{}{
 									"field": "outdoors",
+								},
+								"aggs": map[string]interface{}{
+									"time": map[string]interface{}{
+										"date_histogram": map[string]interface{}{
+											"field":          "timestamp",
+											"fixed_interval": "3m",
+											"min_doc_count":  0,
+										},
+										"aggs": map[string]interface{}{
+											"sumPeople": map[string]interface{}{
+												"sum": map[string]interface{}{
+													"field": "people",
+												},
+											},
+										},
+									},
 								},
 							},
 						},
