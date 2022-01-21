@@ -158,6 +158,7 @@ The following aggregations are currently supported:
 | `"string_stats"`        | `StringStats()`       |
 | `"top_hits"`            | `TopHits()`           |
 | `"terms"`               | `TermsAgg()`          |
+| `"date_histogram"`      | `DateHistogramAgg()`  |
 
 ### Supported Top Level Options
 
